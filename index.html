@@ -2183,14 +2183,14 @@
       <tbody>${list.map(s => `<tr data-stage="${s.name}">${stageTH(s, s.rank)}${rowCells(s)}</tr>`).join("")}</tbody>`;
         bar.innerHTML = keys.length
           ? `<span class="lab">並び順</span>${keys.map((k, j) => `<span class="sk"><span class="pn">${j + 1}</span>${cols[k.col].label} ${k.dir === 1 ? '昇順 ▲' : '降順 ▼'}<button data-rm="${j}" aria-label="${cols[k.col].label}の並び替えを解除">×</button></span>`).join('<span class="then">→</span>')}<button class="reset" data-reset>すべて解除</button>`
-          : `<span class="lab">並び順</span><span class="hint">合計順位（初期状態）。見出しを押すたびに 昇順 → 降順 → 解除 と切り替わります。複数の列を押すと、押した順に優先して並べます。</span>`;
+          : `<span class="lab">並び順</span><span class="hint">合計順位（初期状態）。見出しを押すたびに 降順 → 昇順 → 解除 と切り替わります。複数の列を押すと、押した順に優先して並べます。</span>`;
       }
       el.addEventListener("click", e => {
         const b = e.target.closest("thead button");
         if (b) {
           const i = +b.dataset.col, p = keys.findIndex(k => k.col === i);
-          if (p < 0) keys.push({ col: i, dir: 1 });
-          else if (keys[p].dir === 1) keys[p].dir = -1;
+          if (p < 0) keys.push({ col: i, dir: -1 });
+          else if (keys[p].dir === -1) keys[p].dir = 1;
           else keys.splice(p, 1);
           draw(); el.querySelector(`thead button[data-col="${i}"]`).focus(); return;
         }
