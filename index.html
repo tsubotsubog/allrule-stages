@@ -463,9 +463,23 @@
     font-variant-numeric: tabular-nums
   }
 
-  .rrow .medal-c.g1 { background: radial-gradient(circle at 35% 30%, #fff3b0, var(--gold) 60%); color: var(--accent-ink); border-color: #fff6c8 }
-  .rrow .medal-c.g2 { background: radial-gradient(circle at 35% 30%, #ffffff, var(--silver) 60%); color: var(--accent-ink); border-color: #eef3fb }
-  .rrow .medal-c.g3 { background: radial-gradient(circle at 35% 30%, #ffd2ad, var(--bronze) 60%); color: var(--accent-ink); border-color: #f1c19a }
+  .rrow .medal-c.g1 {
+    background: radial-gradient(circle at 35% 30%, #fff3b0, var(--gold) 60%);
+    color: var(--accent-ink);
+    border-color: #fff6c8
+  }
+
+  .rrow .medal-c.g2 {
+    background: radial-gradient(circle at 35% 30%, #ffffff, var(--silver) 60%);
+    color: var(--accent-ink);
+    border-color: #eef3fb
+  }
+
+  .rrow .medal-c.g3 {
+    background: radial-gradient(circle at 35% 30%, #ffd2ad, var(--bronze) 60%);
+    color: var(--accent-ink);
+    border-color: #f1c19a
+  }
 
   .rrow .ph {
     grid-area: ph;
@@ -482,7 +496,8 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    line-height: 1.3
+    line-height: 1.3;
+    white-space: nowrap;
   }
 
   .rrow .nm b {
@@ -561,14 +576,36 @@
       gap: 8px 10px;
       padding: 10px 6px
     }
-    .rrow .medal-c { width: 38px; height: 38px; font-size: 16px }
-    .rrow .ph { width: 72px }
-    .rrow .bar { height: 30px }
-    .rrow .fill img { width: 20px; height: 20px }
-    .rrow .ct b { font-size: 24px }
+
+    .rrow .medal-c {
+      width: 38px;
+      height: 38px;
+      font-size: 16px
+    }
+
+    .rrow .ph {
+      width: 72px
+    }
+
+    .rrow .bar {
+      height: 30px
+    }
+
+    .rrow .fill img {
+      width: 20px;
+      height: 20px
+    }
+
+    .rrow .ct b {
+      font-size: 24px
+    }
   }
 
-  .chip .vi { width: 14px; height: 14px; fill: currentColor }
+  .chip .vi {
+    width: 14px;
+    height: 14px;
+    fill: currentColor
+  }
 
   .more-wrap {
     display: flex;
@@ -591,9 +628,19 @@
     gap: 8px
   }
 
-  .more:hover { border-color: var(--fg-3); background: var(--surface-2) }
-  .more .chev { display: inline-block; transition: transform .2s }
-  .more[aria-expanded="true"] .chev { transform: rotate(180deg) }
+  .more:hover {
+    border-color: var(--fg-3);
+    background: var(--surface-2)
+  }
+
+  .more .chev {
+    display: inline-block;
+    transition: transform .2s
+  }
+
+  .more[aria-expanded="true"] .chev {
+    transform: rotate(180deg)
+  }
 
   /* stage grid */
   .grid {
@@ -857,10 +904,28 @@
   }
 
   /* 1〜3位：ランキングと同じ金・銀・銅のメダル */
-  tbody th .r.g1, tbody th .r.g2, tbody th .r.g3 { border-radius: 50%; color: var(--accent-ink); font-weight: 800 }
-  tbody th .r.g1 { background: radial-gradient(circle at 35% 30%, #fff3b0, var(--gold) 60%); box-shadow: 0 0 0 1.5px #fff6c8 }
-  tbody th .r.g2 { background: radial-gradient(circle at 35% 30%, #ffffff, var(--silver) 60%); box-shadow: 0 0 0 1.5px #eef3fb }
-  tbody th .r.g3 { background: radial-gradient(circle at 35% 30%, #ffd2ad, var(--bronze) 60%); box-shadow: 0 0 0 1.5px #f1c19a }
+  tbody th .r.g1,
+  tbody th .r.g2,
+  tbody th .r.g3 {
+    border-radius: 50%;
+    color: var(--accent-ink);
+    font-weight: 800
+  }
+
+  tbody th .r.g1 {
+    background: radial-gradient(circle at 35% 30%, #fff3b0, var(--gold) 60%);
+    box-shadow: 0 0 0 1.5px #fff6c8
+  }
+
+  tbody th .r.g2 {
+    background: radial-gradient(circle at 35% 30%, #ffffff, var(--silver) 60%);
+    box-shadow: 0 0 0 1.5px #eef3fb
+  }
+
+  tbody th .r.g3 {
+    background: radial-gradient(circle at 35% 30%, #ffd2ad, var(--bronze) 60%);
+    box-shadow: 0 0 0 1.5px #f1c19a
+  }
 
   tbody td {
     text-align: center;
@@ -1667,13 +1732,24 @@
         </div>
         <div class="seg" role="group" aria-label="表示">
           <span class="lab">表示</span>
-          <button class="chip" id="viewList" aria-pressed="true"><svg class="vi" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="14" height="3" rx="1.5"/><rect x="1" y="6.5" width="10" height="3" rx="1.5"/><rect x="1" y="11" width="6" height="3" rx="1.5"/></svg>リスト</button>
-          <button class="chip" id="viewCard" aria-pressed="false"><svg class="vi" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>カード</button>
+          <button class="chip" id="viewList" aria-pressed="true"><svg class="vi" viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="1" y="2" width="14" height="3" rx="1.5" />
+              <rect x="1" y="6.5" width="10" height="3" rx="1.5" />
+              <rect x="1" y="11" width="6" height="3" rx="1.5" />
+            </svg>リスト</button>
+          <button class="chip" id="viewCard" aria-pressed="false"><svg class="vi" viewBox="0 0 16 16"
+              aria-hidden="true">
+              <rect x="1" y="1" width="6" height="6" rx="1.5" />
+              <rect x="9" y="1" width="6" height="6" rx="1.5" />
+              <rect x="1" y="9" width="6" height="6" rx="1.5" />
+              <rect x="9" y="9" width="6" height="6" rx="1.5" />
+            </svg>カード</button>
         </div>
       </div>
       <div class="legend" id="legend"></div>
       <div class="rlist" id="grid"></div>
-      <div class="more-wrap"><button class="more" id="moreBtn" aria-expanded="false" aria-controls="grid"></button></div>
+      <div class="more-wrap"><button class="more" id="moreBtn" aria-expanded="false" aria-controls="grid"></button>
+      </div>
     </div>
   </section>
 
