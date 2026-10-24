@@ -417,6 +417,14 @@
     gap: 6px
   }
 
+  .lead-note {
+    margin: -16px 0 22px;
+    font-size: 12px;
+    color: var(--fg-3)
+  }
+
+  dialog::backdrop { cursor: pointer }
+
   /* loading */
   .top-load {
     position: fixed;
@@ -1804,7 +1812,8 @@
     <div class="wrap">
       <div class="eyebrow">RANKING</div>
       <h2>ステージ選出ランキング</h2>
-      <p class="lead">ステージを押すと、ルールごとの内訳と大会ごとの推移を表示します。選出率は、そのステージが追加されてから行われた試合数に対する割合です。</p>
+      <p class="lead">ステージをクリック（タップ）すると、ルールごとの内訳や大会ごとの推移などの詳細情報がポップアップで表示されます。選出率は、そのステージが追加されてから行われた試合数に対する割合です。</p>
+      <p class="lead-note">※ 詳細情報は、× ボタンのほか、ポップアップの外側をタップ（クリック）しても閉じられます。</p>
       <div class="controls">
         <div class="seg" role="group" aria-label="ルール">
           <span class="lab">ルール</span>
@@ -2288,7 +2297,13 @@
       return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${s.name}の大会ごとの選出回数">${g}</svg>`;
     }
     $("dlgClose").addEventListener("click", () => dlg.close());
-    dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+    // ポップアップの外側（背景）をタップ・クリックしたら閉じる
+    dlg.addEventListener("click", e => {
+      if (e.target !== dlg) return;
+      const r = dlg.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) dlg.close();
+    });
     document.addEventListener("click", e => {
       const b = e.target.closest(".rrow,.card,.pod"); if (b) openStage(b.dataset.stage);
     });
