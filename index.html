@@ -417,6 +417,74 @@
     gap: 6px
   }
 
+  /* loading */
+  .top-load {
+    position: fixed;
+    top: env(safe-area-inset-top, 0px);
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 30;
+    overflow: hidden;
+    background: rgba(233, 242, 74, .12)
+  }
+
+  .top-load::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 35%;
+    background: var(--accent);
+    border-radius: 3px;
+    animation: topload 1.2s ease-in-out infinite
+  }
+
+  @keyframes topload {
+    0% { left: -35% }
+    100% { left: 100% }
+  }
+
+  .loading-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--fg-2)
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(233, 242, 74, .25);
+    border-top-color: var(--accent);
+    animation: spin .8s linear infinite;
+    flex: none
+  }
+
+  @keyframes spin { to { transform: rotate(360deg) } }
+
+  .skel {
+    display: block;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 40%, var(--surface) 80%);
+    background-size: 300% 100%;
+    animation: shimmer 1.4s ease-in-out infinite
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 100% 0 }
+    100% { background-position: 0 0 }
+  }
+
+  .skel-fact { width: 92px; height: 30px; border-radius: 8px }
+  .skel-pod { height: 310px; min-width: 0; border-radius: var(--radius) }
+  @media (max-width: 760px) { .skel-pod { height: 220px } .skel-pod + .skel-pod { display: none } }
+  .skel-row { height: 58px; border-radius: 12px }
+  .skel-cell { padding: 14px !important; border: 0 !important }
+  .skel-line { height: 34px; margin-bottom: 8px; border-radius: 6px; min-width: 260px }
+  .skel-line:last-child { margin-bottom: 0 }
+
   /* ranking rows (bar list) */
   .rlist {
     display: flex;
@@ -960,8 +1028,24 @@
   }
 
   .cell.na {
-    background: repeating-linear-gradient(135deg, transparent 0 5px, rgba(111, 131, 161, .18) 5px 6px);
-    color: transparent
+    background: repeating-linear-gradient(135deg, rgba(111, 131, 161, .10) 0 6px, rgba(111, 131, 161, .38) 6px 8px);
+    border: 1px dashed rgba(169, 184, 207, .55);
+    color: var(--fg-2);
+    font-family: var(--f-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden
+  }
+
+  .cell.na b {
+    background: var(--surface);
+    padding: 1px 8px;
+    border-radius: 4px;
+    color: var(--fg);
+    font-weight: 700
   }
 
   td.tot {
@@ -1022,8 +1106,8 @@
     width: 44px;
     height: 14px;
     border-radius: 2px;
-    background: repeating-linear-gradient(135deg, var(--surface) 0 3px, rgba(111, 131, 161, .5) 3px 4px);
-    border: 1px solid var(--line)
+    background: repeating-linear-gradient(135deg, rgba(111, 131, 161, .10) 0 4px, rgba(111, 131, 161, .45) 4px 6px);
+    border: 1px dashed rgba(169, 184, 207, .55)
   }
 
   .sortbar {
@@ -1694,6 +1778,7 @@
   }
 </style>
 
+<div class="top-load" id="topLoad" aria-hidden="true"></div>
 <header class="site-head">
   <div class="wrap">
     <a class="brand" href="#top"><small>ALL RULE CUP</small><b>ステージデータ</b></a>
@@ -1710,9 +1795,9 @@
   <div class="wrap hero">
     <div class="eyebrow">STAGE DATABASE</div>
     <h1>どのステージが、<em>何回</em>選ばれたか。</h1>
-    <p class="sub" id="heroSub">スプレッドシートからデータを読み込んでいます…</p>
-    <div class="facts" id="facts"></div>
-    <div class="podium" id="podium"></div>
+    <p class="sub" id="heroSub"><span class="loading-note" role="status"><span class="spinner" aria-hidden="true"></span><span id="loadingText">スプレッドシートからデータを読み込んでいます…</span></span></p>
+    <div class="facts" id="facts"><span class="skel skel-fact"></span><span class="skel skel-fact"></span><span class="skel skel-fact"></span><span class="skel skel-fact"></span></div>
+    <div class="podium" id="podium"><div class="skel skel-pod"></div><div class="skel skel-pod"></div><div class="skel skel-pod"></div></div>
   </div>
 
   <section id="ranking">
@@ -1747,8 +1832,8 @@
         </div>
       </div>
       <div class="legend" id="legend"></div>
-      <div class="rlist" id="grid"></div>
-      <div class="more-wrap"><button class="more" id="moreBtn" aria-expanded="false" aria-controls="grid"></button>
+      <div class="rlist" id="grid"><div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div></div>
+      <div class="more-wrap" hidden><button class="more" id="moreBtn" aria-expanded="false" aria-controls="grid"></button>
       </div>
     </div>
   </section>
@@ -1759,7 +1844,7 @@
       <h2>ルール別 選出回数</h2>
       <p class="lead">色が濃いほど多く選ばれています。列の見出しで並び替えができ、複数の列を組み合わせることもできます。</p>
       <div class="tbl-wrap">
-        <table id="ruleTable"></table>
+        <table id="ruleTable"><tbody><tr><td class="skel-cell"><span class="skel skel-line"></span><span class="skel skel-line"></span><span class="skel skel-line"></span><span class="skel skel-line"></span></td></tr></tbody></table>
       </div>
       <div class="scale" id="ruleScale"></div>
     </div>
@@ -1769,9 +1854,9 @@
     <div class="wrap">
       <div class="eyebrow">BY CUP</div>
       <h2>大会別 選出回数</h2>
-      <p class="lead">各大会でそのステージが使われた試合数（全ルール合計）です。第1〜3回は1ルール4試合、第4回以降は1ルール10試合。斜線はステージ追加前の大会です。</p>
+      <p class="lead">各大会でそのステージが使われた試合数（全ルール合計）です。第1〜3回は1ルール4試合、第4回以降は1ルール10試合。「追加前」の斜線の帯は、そのステージがまだ追加されていなかった大会です。</p>
       <div class="tbl-wrap">
-        <table id="histTable"></table>
+        <table id="histTable"><tbody><tr><td class="skel-cell"><span class="skel skel-line"></span><span class="skel skel-line"></span><span class="skel skel-line"></span><span class="skel skel-line"></span></td></tr></tbody></table>
       </div>
       <div class="scale" id="histScale"></div>
     </div>
@@ -1889,6 +1974,15 @@
     if (D.stages.some(s => !s.rateRank)) { const r = competitionRank(D.stages, s => s.rate); D.stages.forEach(s => s.rateRank = r(s)); }
     return D;
   }
+  // 読み込みが長引いたときは文言を変える
+  const slowTimer = setTimeout(() => {
+    const el = document.getElementById("loadingText");
+    if (el) el.textContent = "読み込みに時間がかかっています。もう少しお待ちください…";
+  }, 6000);
+  function finishLoading() {
+    clearTimeout(slowTimer);
+    const bar = document.getElementById("topLoad"); if (bar) bar.remove();
+  }
   async function loadData() {
     if (!API_URL) return { data: SNAPSHOT, mode: "snapshot" };
     try {
@@ -1907,6 +2001,7 @@
   loadData().then(({ data, mode }) => {
     try { main(normalize(data), mode); }
     catch (e) { console.error(e); if (mode === "live") { main(normalize(SNAPSHOT), "fallback"); } }
+    finishLoading();
   });
 
   function main(DATA, mode) {
@@ -2115,7 +2210,12 @@
       [...T.map((t, i) => ({ head: `${t.name.replace("第", "").replace("回", "")}<span class="d">${t.date.split("-")[0].slice(2)}</span>`, v: s => s.tourTotals[i], label: t.name })),
       { head: "合計", v: s => s.total, label: "合計" }],
       s => s.tourTotals.map((v, i) => {
-        if (i < s.first) return `<td><span class="cell na" data-tip="${s.name}|${T[i].name}：ステージ追加前">–</span></td>`;
+        if (i < s.first) {
+          // 追加前の大会はまとめて1つの帯にする
+          if (i > 0) return "";
+          const label = s.first >= 3 ? `<b>追加前</b>${T[s.first].name}から登場 →` : `<b>追加前</b>`;
+          return `<td colspan="${s.first}"><span class="cell na" data-tip="${s.name}|${T[0].name}〜${T[s.first - 1].name}：まだステージが追加されていません">${label}</span></td>`;
+        }
         const br = s.per[i].map((x, k) => x ? `${RULES[k].short}${x}` : "").filter(Boolean).join("・");
         return `<td><span class="cell${v ? '' : ' zero'}" style="${heat(v, histMax)}" data-tip="${s.name}|${T[i].name}（${T[i].date}）：${v}試合${br ? '<br>' + br : ''}">${v || "·"}</span></td>`;
       }).join("") + `<td class="tot">${s.total}</td>`);
