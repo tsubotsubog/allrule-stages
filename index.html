@@ -211,6 +211,79 @@
     padding-block: 44px 8px
   }
 
+  /* hero background slideshow */
+  .hero-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden
+  }
+
+  .hero-band .hero {
+    padding-block: 56px 28px
+  }
+
+  .hero-rest {
+    padding-block: 0 8px
+  }
+
+  .hero-rest .facts {
+    margin-top: 4px
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* 上下の端をなじませる */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 55%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 55%, transparent 100%)
+  }
+
+  .hb-layer {
+    position: absolute;
+    inset: -4%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.8s ease
+  }
+
+  .hb-layer.on {
+    opacity: .75;
+    animation: kenburns 9s ease-out forwards
+  }
+
+  @keyframes kenburns {
+    from { transform: scale(1.10) translate(1.5%, 1%) }
+    to { transform: scale(1.0) translate(0, 0) }
+  }
+
+  /* 文字を読みやすくするため、左と下を背景色でぼかす */
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(6, 22, 43, .8) 0%, rgba(6, 22, 43, .55) 40%, rgba(6, 22, 43, .1) 75%, rgba(6, 22, 43, .3) 100%)
+  }
+
+  @media (max-width: 760px) {
+    .hero-bg::after {
+      background:
+        linear-gradient(90deg, rgba(6, 22, 43, .7) 0%, rgba(6, 22, 43, .4) 100%)
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hb-layer { transition: none }
+    .hb-layer.on { animation: none }
+  }
+
+  .hero-band .hero h1, .hero-band .hero .sub, .hero-band .hero .eyebrow {
+    text-shadow: 0 2px 12px rgba(6, 22, 43, .85)
+  }
+
   .hero h1 {
     font-family: var(--f-display);
     font-weight: 800;
@@ -1800,10 +1873,15 @@
 </header>
 
 <main id="top">
+  <div class="hero-band">
+    <div class="hero-bg" id="heroBg" aria-hidden="true"><div class="hb-layer"></div><div class="hb-layer"></div></div>
   <div class="wrap hero">
     <div class="eyebrow">STAGE DATABASE</div>
     <h1>どのステージが、<em>何回</em>選ばれたか。</h1>
     <p class="sub" id="heroSub"><span class="loading-note" role="status"><span class="spinner" aria-hidden="true"></span><span id="loadingText">スプレッドシートからデータを読み込んでいます…</span></span></p>
+  </div>
+  </div>
+  <div class="wrap hero-rest">
     <div class="facts" id="facts"><span class="skel skel-fact"></span><span class="skel skel-fact"></span><span class="skel skel-fact"></span><span class="skel skel-fact"></span></div>
     <div class="podium" id="podium"><div class="skel skel-pod"></div><div class="skel skel-pod"></div><div class="skel skel-pod"></div></div>
   </div>
@@ -2007,6 +2085,29 @@
       return { data: SNAPSHOT, mode: "fallback" };
     }
   }
+  /* 見出しの背景：ステージ画像をランダムな順で切り替える（順位とは無関係） */
+  (function heroSlideshow() {
+    const bg = document.getElementById("heroBg"); if (!bg) return;
+    const layers = bg.querySelectorAll(".hb-layer");
+    const pics = Object.values(IMAGES);
+    for (let i = pics.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pics[i], pics[j]] = [pics[j], pics[i]]; }
+    if (!pics.length) return;
+    let idx = 0, front = 0;
+    function show() {
+      const el = layers[front];
+      el.classList.remove("on");
+      el.style.backgroundImage = `url("${pics[idx % pics.length]}")`;
+      void el.offsetWidth; // アニメーションを最初から再生させる
+      el.classList.add("on");
+      layers[1 - front].classList.remove("on");
+      front = 1 - front; idx++;
+    }
+    show();
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    setInterval(() => { if (!document.hidden) show(); }, 6000);
+  })();
+
   loadData().then(({ data, mode }) => {
     try { main(normalize(data), mode); }
     catch (e) { console.error(e); if (mode === "live") { main(normalize(SNAPSHOT), "fallback"); } }
