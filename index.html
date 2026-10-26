@@ -3065,6 +3065,69 @@
     overscroll-behavior: contain
   }
 
+  /* ===== 追加9：見出し背景（アイコンのコラージュ） ===== */
+  .hb-layer.icons {
+    background: radial-gradient(ellipse at 70% 45%, rgba(74, 143, 232, .22), transparent 65%)
+  }
+
+  .hb-icons {
+    position: absolute;
+    top: 50%;
+    right: 2%;
+    width: min(68%, 900px);
+    transform: translateY(-50%) rotate(-8deg);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px 18px;
+    place-items: center
+  }
+
+  .hb-icons.k-b,
+  .hb-icons.k-p {
+    grid-template-columns: repeat(4, 1fr);
+    width: min(60%, 760px)
+  }
+
+  .hb-icons img {
+    width: 100%;
+    max-width: 130px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .45));
+    opacity: .95
+  }
+
+  .hb-icons.k-b img,
+  .hb-icons.k-p img {
+    max-width: 120px
+  }
+
+  .hb-icons.k-b img:nth-child(even),
+  .hb-icons.k-p img:nth-child(even),
+  .hb-icons.k-w img:nth-child(even) {
+    transform: translateY(14px)
+  }
+
+  @media (max-width: 760px) {
+    .hb-icons {
+      width: 120%;
+      right: -18%;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px 10px
+    }
+
+    .hb-icons.k-b,
+    .hb-icons.k-p {
+      width: 104%;
+      right: -10%
+    }
+  }
+
+  /* ===== 追加9：使用率で並べたときは使用率を大きく ===== */
+  .rrow .ct.by-rate b {
+    letter-spacing: -.01em
+  }
+
 </style>
 
 <div class="top-load" id="topLoad" aria-hidden="true"></div>
@@ -3310,26 +3373,48 @@
     catch (e) { return { data: SNAPSHOT, mode: "fallback" }; }
   }
   /* 見出しの背景：ステージ画像をランダムな順で切り替える（順位とは無関係） */
-  (function heroSlideshow() {
-    const bg = document.getElementById("heroBg"); if (!bg) return;
-    const layers = bg.querySelectorAll(".hb-layer");
-    const pics = Object.values(IMAGES);
-    for (let i = pics.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pics[i], pics[j]] = [pics[j], pics[i]]; }
-    if (!pics.length) return;
-    let idx = 0, front = 0;
+  /* 見出しの背景：表示中のタブに合わせて切り替える（順位とは無関係・ランダムな順）
+     ステージ＝ステージ画像、武器・サブ・スペシャル＝そのアイコンを並べたコラージュ */
+  const hero = (function heroSlideshow() {
+    const bg = document.getElementById("heroBg");
+    const layers = bg ? bg.querySelectorAll(".hb-layer") : [];
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const SRC = { s: () => Object.values(IMAGES), w: () => Object.values(WIMG.w), b: () => Object.values(WIMG.s), p: () => Object.values(WIMG.p) };
+    const PER = { w: 10, b: 8, p: 8 }; // 1枚のコラージュに並べるアイコン数
+    let kind = null, pics = [], idx = 0, front = 0, timer = null;
+    function paint(el) {
+      if (kind === "s") {
+        el.classList.remove("icons"); el.innerHTML = "";
+        el.style.backgroundImage = `url("${pics[idx % pics.length]}")`;
+        idx++;
+      } else {
+        el.classList.add("icons"); el.style.backgroundImage = "none";
+        const n = Math.min(PER[kind], pics.length), set = [];
+        for (let i = 0; i < n; i++) set.push(pics[(idx + i) % pics.length]);
+        idx += n;
+        el.innerHTML = `<div class="hb-icons k-${kind}">${set.map((src, i) => `<img src="${src}" alt="" style="--d:${(i % 3) * 0.15}s">`).join("")}</div>`;
+      }
+    }
     function show() {
+      if (!layers.length || !pics.length) return;
       const el = layers[front];
       el.classList.remove("on");
-      el.style.backgroundImage = `url("${pics[idx % pics.length]}")`;
+      paint(el);
       void el.offsetWidth;
       el.classList.add("on");
       layers[1 - front].classList.remove("on");
-      front = 1 - front; idx++;
+      front = 1 - front;
     }
-    show();
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-    setInterval(() => { if (!document.hidden) show(); }, 6000);
+    function setKind(k) {
+      if (k === kind || !SRC[k]) return;
+      kind = k; pics = shuffle(SRC[k]()); idx = 0;
+      show();
+      if (timer) clearInterval(timer);
+      if (!reduce) timer = setInterval(() => { if (!document.hidden) show(); }, kind === "s" ? 6000 : 7000);
+    }
+    setKind("s");
+    return { setKind };
   })();
 
   function render(data, mode, extra) {
@@ -3559,6 +3644,7 @@
     });
     $("nav").innerHTML = NAV[v].map(([id, l]) => `<a href="#${id}">${l}</a>`).join("");
     $("heroEyebrow").textContent = KINDS[v].eyebrow;
+    hero.setKind(v);
     $("heroTitle").innerHTML = KINDS[v].title;
     if (window.__heroSub) $("heroSub").textContent = window.__heroSub[v];
     try { localStorage.setItem("dataView", v); } catch (e) { }
@@ -3757,9 +3843,9 @@
           return `<button class="card" ${dataAttr(s)}>
         <div class="ph"><img src="${s.img}" alt="${esc(s.name)}" loading="lazy"><span class="rk${cls}">${r}</span></div>
         <div class="body">
-          <div class="row1"><span class="nm">${esc(s.name)}</span><span class="ct">${val(s)}<small>回</small></span></div>
+          <div class="row1"><span class="nm">${esc(s.name)}</span>${sortMode === "rate" ? `<span class="ct">${(rate(s) * 100).toFixed(2)}<small>%</small></span>` : `<span class="ct">${val(s)}<small>回</small></span>`}</div>
           ${val(s) > 0 ? cardStack(s, ruleSel, maxVal) : `<span class="empty-note">このルールでの${K.verb}なし</span>`}
-          <div class="meta"><span>${K.verb}率 <b>${pct(rate(s))}</b></span><span>${isW ? esc(s.type || "") : isI ? s.members.length + "種類の武器" : T[s.first].name + "から"}</span></div>
+          <div class="meta"><span>${sortMode === "rate" ? `${K.verb}回数 <b>${val(s)}回</b>` : `${K.verb}率 <b>${pct(rate(s))}</b>`}</span><span>${isW ? esc(s.type || "") : isI ? s.members.length + "種類の武器" : T[s.first].name + "から"}</span></div>
         </div></button>`;
         }
         return `<button class="rrow" ${dataAttr(s)} aria-label="${r}位 ${esc(s.name)} ${val(s)}回">
@@ -3767,7 +3853,9 @@
         <img class="ph" src="${s.img}" alt="" loading="lazy">
         <span class="nm"><b>${esc(s.name)}</b>${subline(s)}</span>
         ${barHTML(s, ruleSel, maxVal)}
-        <span class="ct"><b>${val(s)}<small>回</small></b><span>${K.verb}率 ${pct(rate(s))}</span></span>
+        ${sortMode === "rate"
+          ? `<span class="ct by-rate"><b>${(rate(s) * 100).toFixed(2)}<small>%</small></b><span>${K.verb}回数 ${val(s)}回</span></span>`
+          : `<span class="ct"><b>${val(s)}<small>回</small></b><span>${K.verb}率 ${pct(rate(s))}</span></span>`}
       </button>`;
       }).join("");
       const pg = pagerHTML(Math.min(rankShown, all.length), all.length, K.collapsed, K.step, K.noun);
