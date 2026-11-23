@@ -3194,7 +3194,273 @@
     margin: 16px 0 0
   }
 
+  /* ===== 追加12：表示テーマ切り替え ===== */
+  .theme-sw {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--line)
+  }
+
+  .theme-sw button {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--fg-2)
+  }
+
+  .theme-sw button:hover {
+    color: var(--fg)
+  }
+
+  .theme-sw button[aria-pressed="true"] {
+    background: var(--surface-2);
+    color: var(--fg)
+  }
+
+  .theme-sw button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px
+  }
+
+  .theme-sw svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round
+  }
+
+  .theme-sw button[data-theme-set="dark"] svg {
+    fill: currentColor;
+    stroke: none
+  }
+
+  @media (max-width: 760px) {
+    .theme-sw span {
+      display: none
+    }
+
+    .theme-sw {
+      margin-left: auto
+    }
+
+    body .site-head .wrap .nav {
+      width: auto;
+      flex: 1 1 0;
+      min-width: 0
+    }
+  }
+
+  /* ライトテーマ：色の変数を差し替える */
+  html[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f6fa;
+    --surface: #ffffff;
+    --surface-2: #e9eef6;
+    --line: #d3dbe7;
+    --fg: #14233a;
+    --fg-2: #46566e;
+    --fg-3: #6b7a90;
+    --accent: #1f5fd6;
+    --accent-ink: #ffffff;
+    --h1: #dde8f8;
+    --h2: #b9d1f3;
+    --h3: #8cb3ea;
+    --h4: #4f88dc;
+    --h5: #2864c4;
+    --h6: #173f86;
+    --up: #2f8f46;
+    --down: #d4552b;
+    --gold: #c99a12;
+    --silver: #8e9bb0;
+    --bronze: #b56a2e
+  }
+
+  html[data-theme="light"] body {
+    background-image: radial-gradient(circle at 12% -10%, rgba(57, 135, 229, .12), transparent 40%), radial-gradient(circle at 95% 8%, rgba(31, 95, 214, .06), transparent 35%)
+  }
+
+  html[data-theme="light"] body::before,
+  html[data-theme="light"] .site-head {
+    background: rgba(244, 246, 250, .92)
+  }
+
+  /* 見出しの背景画像：文字が読めるよう、明るい色でぼかす */
+  html[data-theme="light"] .hero-bg::after {
+    background:
+      linear-gradient(0deg, var(--bg) 0%, rgba(244, 246, 250, 0) 45%),
+      linear-gradient(90deg, rgba(244, 246, 250, .9) 0%, rgba(244, 246, 250, .7) 40%, rgba(244, 246, 250, .2) 75%, rgba(244, 246, 250, .4) 100%)
+  }
+
+  @media (max-width: 760px) {
+    html[data-theme="light"] .hero-bg::after {
+      background:
+        linear-gradient(0deg, var(--bg) 0%, rgba(244, 246, 250, 0) 45%),
+        linear-gradient(90deg, rgba(244, 246, 250, .85) 0%, rgba(244, 246, 250, .65) 100%)
+    }
+  }
+
+  html[data-theme="light"] .hero-band .hero h1,
+  html[data-theme="light"] .hero-band .hero .sub,
+  html[data-theme="light"] .hero-band .hero .eyebrow {
+    text-shadow: 0 1px 10px rgba(244, 246, 250, .9)
+  }
+
+  html[data-theme="light"] .dlg-img .shade {
+    background: linear-gradient(transparent, rgba(255, 255, 255, .96))
+  }
+
+  html[data-theme="light"] .close,
+  html[data-theme="light"] .rk:not(.g1):not(.g2):not(.g3) {
+    background: rgba(255, 255, 255, .88)
+  }
+
+  html[data-theme="light"] .mv {
+    background: rgba(255, 255, 255, .92)
+  }
+
+  html[data-theme="light"] #tip {
+    box-shadow: 0 6px 24px rgba(20, 35, 58, .18)
+  }
+
+  html[data-theme="light"] dialog::backdrop {
+    background: rgba(20, 35, 58, .45)
+  }
+
+  html[data-theme="light"] .rrow .bar {
+    background: var(--surface-2)
+  }
+
+  html[data-theme="light"] .rk {
+    border-color: rgba(20, 35, 58, .12)
+  }
+
+  /* ===== 追加13：ランキングの順位変動マーク ===== */
+  .rmv {
+    display: inline-block;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 11.5px;
+    line-height: 1.5;
+    padding: 0 7px;
+    margin-left: 8px;
+    border-radius: 999px;
+    vertical-align: 2px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+    background: var(--surface-2);
+    border: 1px solid var(--line)
+  }
+
+  .rmv.up {
+    color: #3ccf7a;
+    border-color: rgba(60, 207, 122, .45)
+  }
+
+  .rmv.dn {
+    color: var(--down);
+    border-color: rgba(255, 138, 102, .45)
+  }
+
+  .rmv.eq {
+    color: var(--fg-3)
+  }
+
+  .rmv.new {
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-color: var(--accent)
+  }
+
+  html[data-theme="light"] .rmv.up {
+    color: #1f8a46;
+    border-color: rgba(31, 138, 70, .4)
+  }
+
+  .rmv-legend .rmv {
+    margin: 0 2px 0 6px;
+    vertical-align: 1px
+  }
+
+  .card .row1 .nm .rmv {
+    font-size: 11px
+  }
+
+  @media (max-width: 760px) {
+    body .rmv {
+      font-size: 12px
+    }
+  }
+
+  /* 変動マークを順位の下に置く */
+  .rrow .rkcol {
+    grid-area: rk;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px
+  }
+
+  .rrow .rkcol .rmv,
+  .rkwrap .rmv {
+    margin: 0;
+    vertical-align: 0;
+    font-size: 11px;
+    padding: 0 6px
+  }
+
+  .card .ph .rkwrap {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px
+  }
+
+  .card .ph .rkwrap .rk {
+    position: static
+  }
+
+  .card .ph .rkwrap .rmv:not(.new) {
+    background: rgba(6, 22, 43, .85)
+  }
+
+  html[data-theme="light"] .card .ph .rkwrap .rmv:not(.new) {
+    background: rgba(255, 255, 255, .92)
+  }
+
+  @media (max-width: 760px) {
+    body .rrow .rkcol .rmv {
+      font-size: 11px;
+      padding: 0 4px
+    }
+  }
+
+  /* 長い名前は折り返して、回数と重ならないようにする */
+  .rrow .nm b {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.25
+  }
+
 </style>
+<script>
+  /* 前回選んだ表示テーマを、描画前に適用（ちらつき防止）。未設定ならダーク */
+  (function () { var t = "dark"; try { var s = localStorage.getItem("allrule-theme"); if (s === "light" || s === "dark") t = s; } catch (e) { } document.documentElement.setAttribute("data-theme", t); })();
+</script>
 
 <div class="top-load" id="topLoad" aria-hidden="true"></div>
 <header class="site-head">
@@ -3207,6 +3473,10 @@
       <button role="tab" id="tab-p" data-view="p" aria-selected="false">スペシャル</button>
     </div>
     <nav class="nav" aria-label="セクション" id="nav"></nav>
+    <div class="theme-sw" role="group" aria-label="表示テーマ">
+      <button data-theme-set="light" aria-pressed="false" title="ライトテーマ"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span>ライト</span></button>
+      <button data-theme-set="dark" aria-pressed="true" title="ダークテーマ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg><span>ダーク</span></button>
+    </div>
   </div>
 </header>
 
@@ -3584,6 +3854,20 @@
 
   document.getElementById("maintRetry").addEventListener("click", () => location.reload());
 
+  /* ---------- 表示テーマ（ライト／ダーク） ---------- */
+  function applyTheme(t) {
+    document.documentElement.setAttribute("data-theme", t);
+    document.querySelectorAll("[data-theme-set]").forEach(b => b.setAttribute("aria-pressed", b.dataset.themeSet === t));
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", t === "light" ? "#f4f6fa" : "#06162b");
+  }
+  applyTheme(document.documentElement.getAttribute("data-theme") || "dark");
+  document.querySelector(".theme-sw").addEventListener("click", e => {
+    const b = e.target.closest("[data-theme-set]"); if (!b) return;
+    applyTheme(b.dataset.themeSet);
+    try { localStorage.setItem("allrule-theme", b.dataset.themeSet); } catch (err) { }
+  });
+
   /* ---------- 共通の部品 ---------- */
   const $ = id => document.getElementById(id);
   const pct = v => (v * 100).toFixed(2) + "%";
@@ -3676,6 +3960,7 @@
         <h2>${K.noun}${K.verb}ランキング</h2>
         <p class="lead">${K.noun}をクリック（タップ）すると、ルールごとの内訳や大会ごとの推移などの詳細情報がポップアップで表示されます。${K.rateNote}</p>
         <p class="lead-note">※ 詳細情報は、× ボタンのほか、ポップアップの外側をタップ（クリック）しても閉じられます。</p>
+        <p class="lead-note rmv-legend">順位の下のマークは、前回大会終了時点の順位からの変動です（<i class="rmv up">▲</i>上昇　<i class="rmv dn">▼</i>下降　<i class="rmv eq">→</i>変わらず　<i class="rmv new">NEW!</i>最新の大会で初めて${K.verb}）。</p>
         <div class="controls">
           <div class="seg" role="group" aria-label="ルール"><span class="lab">ルール</span><div class="seg" data-k="ruleChips"></div></div>
           ${typeSeg}
@@ -3809,7 +4094,15 @@
     const T = DATA.tournaments, G = DATA.games;
     const TOTAL_GAMES = G.reduce((a, b) => a + b * 5, 0);
     $("views").innerHTML = KIND_KEYS.map(k => viewHTML(KINDS[k])).join("");
-    const span = `${T[0].name}（${T[0].date}）から${T[T.length - 1].name}（${T[T.length - 1].date.split("-")[0]}）まで`;
+    // 最後の大会は、2日開催なら最終日の日付にする（例：2026/11/21-2026/11/22 → 2026/11/22）
+    const endDate = d => {
+      const parts = String(d || "").split("-").map(s => s.trim()).filter(Boolean);
+      if (parts.length < 2) return parts[0] || "";
+      const a = parts[0].split("/"), z = parts[parts.length - 1].split("/");
+      return z.length >= 3 ? z.join("/") : [...a.slice(0, a.length - z.length), ...z].join("/");
+    };
+    const lastT = T[T.length - 1];
+    const span = `${T[0].name}（${T[0].date}）から${lastT.name}${lastT.date ? `（${endDate(lastT.date)}）` : ""}まで`;
     const heroSub = {
       s: `${span}、${T.length}大会の全ルール・全試合のステージを集計しました。`,
       w: `${span}、${T.length}大会・${TOTAL_GAMES}試合で使われた武器（${TOTAL_GAMES * 8}枠）を集計しました。`,
@@ -3981,6 +4274,26 @@
       const pool = typeSel ? S.filter(s => s.type === typeSel) : S;
       const ranks = rankBy(pool, key);
       const all = [...pool].sort((a, b) => key(b) - key(a) || val(b) - val(a));
+      // 前回大会終了時点（最新の大会を除いた累計）の順位と比べた変動
+      const L = T.length - 1;
+      const prevRules = s => [0, 1, 2, 3, 4].map(k => s.per.slice(0, L).reduce((a, p) => a + (p[k] || 0), 0));
+      const prevVal = s => { const pr = prevRules(s); return ruleSel < 0 ? pr.reduce((a, b) => a + b, 0) : pr[ruleSel]; };
+      const prevSlots = s => { let n = 0; for (let i = s.first; i < L; i++) n += G[i] * 5 * SPG; return n; };
+      const prevRate = s => { const sl = prevSlots(s); return sl ? prevVal(s) / (ruleSel < 0 ? sl : sl / 5) : 0; };
+      const prevKey = sortMode === "count" ? prevVal : prevRate;
+      const prevRanks = L > 0 ? rankBy(pool, prevKey) : null;
+      const moveOf = s => {
+        if (!prevRanks) return "";
+        const now = ranks.get(s), was = prevRanks.get(s), lastName = T[L - 1].name;
+        if (val(s) > 0 && prevVal(s) === 0)
+          return `<i class="rmv new" title="${T[L].name}で初めて${K.verb}">NEW!</i>`;
+        if (val(s) === 0) return "";
+        const d = was - now;
+        const tip = `${lastName}終了時点の${was}位から`;
+        return d > 0 ? `<i class="rmv up" title="${tip}${d}つ上昇">▲${d}</i>`
+          : d < 0 ? `<i class="rmv dn" title="${tip}${-d}つ下降">▼${-d}</i>`
+            : `<i class="rmv eq" title="${lastName}終了時点と同じ順位">→</i>`;
+      };
       const list = all.slice(0, rankShown);
       const maxVal = Math.max(1, ...pool.map(val));
       const grid = q("grid");
@@ -3990,7 +4303,7 @@
         const cls = r <= 3 ? ` g${r}` : "";
         if (viewMode === "card") {
           return `<button class="card" ${dataAttr(s)}>
-        <div class="ph"><img src="${s.img}" alt="${esc(s.name)}" loading="lazy"><span class="rk${cls}">${r}</span></div>
+        <div class="ph"><img src="${s.img}" alt="${esc(s.name)}" loading="lazy"><span class="rkwrap"><span class="rk${cls}">${r}</span>${moveOf(s)}</span></div>
         <div class="body">
           <div class="row1"><span class="nm">${esc(s.name)}</span>${sortMode === "rate" ? `<span class="ct">${(rate(s) * 100).toFixed(2)}<small>%</small></span>` : `<span class="ct">${val(s)}<small>回</small></span>`}</div>
           ${val(s) > 0 ? cardStack(s, ruleSel, maxVal) : `<span class="empty-note">このルールでの${K.verb}なし</span>`}
@@ -3998,7 +4311,7 @@
         </div></button>`;
         }
         return `<button class="rrow" ${dataAttr(s)} aria-label="${r}位 ${esc(s.name)} ${val(s)}回">
-        <span class="medal-c${cls}">${r}</span>
+        <span class="rkcol"><span class="medal-c${cls}">${r}</span>${moveOf(s)}</span>
         <img class="ph" src="${s.img}" alt="" loading="lazy">
         <span class="nm"><b>${esc(s.name)}</b>${subline(s)}</span>
         ${barHTML(s, ruleSel, maxVal)}
